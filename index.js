@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/authentication",userlogin);
 app.use("/playlist",userverify,playlist);
 app.get('/test',(req,res)=>{res.send('this is test')});
-app.post('/test',(req,res)=>{res.status(200).json({'msg':'ok','username':req.body.username})});
+app.post('/test',(req,res)=>{res.status(200).json({'username':req.body.username})});
 app.listen(process.env.PORT||2000,()=>{
     console.log("server is running");
 })
