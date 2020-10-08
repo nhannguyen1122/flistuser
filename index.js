@@ -12,6 +12,7 @@ mongoose.connect(process.env.db_connection, {useNewUrlParser: true,useUnifiedTop
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/authentication",userlogin);
 app.use("/playlist",userverify,playlist);
+app.get('/test',(req,res)=>{res.send('this is test')});
 app.listen(process.env.PORT||2000,()=>{
     console.log("server is running");
 })
