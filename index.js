@@ -10,10 +10,13 @@ const userverify=require("./validation/playlistverify");
 const bodyParser = require('body-parser');
 mongoose.connect(process.env.db_connection, {useNewUrlParser: true,useUnifiedTopology: true });
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use("/authentication",userlogin);
 app.use("/playlist",userverify,playlist);
 app.get('/test',(req,res)=>{res.send('this is test')});
-app.post('/test',(req,res)=>{res.status(200).json({'username':req.body.username})});
+app.post('/test',(req,res)=>{
+console.log(req.body);
+return res.status(200).json({'msg':'okok','username':req.body.username})});
 app.listen(process.env.PORT||2000,()=>{
     console.log("server is running");
 })
