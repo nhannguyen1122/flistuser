@@ -1,5 +1,5 @@
     const jwt=require('jsonwebtoken')
-   const  playlistverify=async (req, res,next)=>{
+   const  verifyToken=async (req, res,next)=>{
      try {
             const {authorization}=req.headers;
             if(authorization){
@@ -33,4 +33,4 @@
          res.status(500).send(error);
      }   
     }
-    module.exports =playlistverify;
+    module.exports =verifyToken;

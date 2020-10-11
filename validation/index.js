@@ -1,41 +1,40 @@
 const users=require('../model/index');
 const bcrypt = require('bcrypt');
-
+const emailExistence=require('email-existence')
 module.exports={
     registervalidation: async (req, res,next)=>{
         const{username,email,password}=req.body;
-        if(!email.match(/^[a-z0-9](?!.*?[^\na-z0-9]{2})[^\s@]+@[^\s@]+\.[^\s@]+[a-z0-9]$/)){
-           
-            return res.status(500).json({ 
-                "msg":" invalid email"
-
-            });
-        }
-         if( username.length<=6){
-            return res.status(500).json({
-                "msg":" username at least 6 characters"
-            })
-        }
-         if( password.length<=6){
-            return res.status(500).json({
-                "msg":" password at least 6 characters"
-            })
-        
-        }
-        else{
-            const existusername= await users.findOne({username:username});
-            const existemail= await users.findOne({email:email});
-            if(existusername||existemail){
-                return res.status(500).json({
-                    "msg":" already exists"
-                });
+        emailExistence.check(email, async(error, response)=>{
             
-            }
-            else{
-                next();
-            }
-          
-        }
+           if(error){
+               return res.status(500).json({'msg':'sever error'});
+           }
+           else{
+                    if(response){
+                        const existusername= await users.findOne({username:username});
+                    const existemail= await users.findOne({email:email});
+                    if(existusername){
+                        return res.status(500).json({
+                            "msg":" username has already been taken"
+                        });
+                    
+                    }
+                    else if(existemail){
+                        return res.status(500).json({"msg":"this email exists"})
+                    }
+                    else{
+                        next();
+                    }
+                        }
+                        else{
+                            return res.status(500).json({ 
+                                "msg":"this email does not exist"
+
+                            });
+                        }
+           }
+        });
+        
     },
 
     logingvalidation: async(req, res,next)=>{
@@ -51,17 +50,17 @@ module.exports={
                 }
                 else{
                     return res.status(401).json({
-                        "msg":" password incorrect"
+                        "msg":" incorrect username or password "
                     })
                 }
             }
             else{
-                return res.status(500).json({
-                    "msg":"username does not exist"
+                return res.status(401).json({
+                    "msg":" incorrect username or password "
                 })
             }
        } catch (error) {
-           return res.status(401).json(error);
+           return res.status(500).json(error);
        }
     }
 }

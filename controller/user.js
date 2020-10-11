@@ -18,7 +18,7 @@ module.exports={
         });
         await newUsers.save();
         res.status(200).json({
-            "msg":"success",
+            "msg":" register success",
         })
 
        }
@@ -28,6 +28,7 @@ module.exports={
     },
     login: async(req,res)=>{
        const{username,password} = req.body;
+	console.log(req.body);
        var token = await jwt.sign({username:username}, process.env.secretkey);
       return res.status(200).json({
           "msg":'login success',
