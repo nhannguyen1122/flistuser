@@ -43,7 +43,10 @@ module.exports ={
         
        try {
            const{name}=req.body;
-           const existplaylists=await playlists.findOne({name:name});
+           const tokendecoded=req.headers.authorization.split(" ")[1];
+           let decode=jwt.decode(tokendecoded);
+           const {username}=decode;
+           const existplaylists=await playlists.findOne({name:name,username:username});
            
            if(existplaylists){
                res.status(500).json({
@@ -52,9 +55,7 @@ module.exports ={
 
            }
            else{
-            const tokendecoded=req.headers.authorization.split(" ")[1];
-            let decoded=await jwt.verify(tokendecoded,process.env.secretkey);
-            const{ username}= decoded;
+           
             let Playlist=new playlists({
                 name:name,
                 movies:[],
