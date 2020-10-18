@@ -23,7 +23,10 @@ const findIndex1=(array,id)=>{
 module.exports ={
     getPlaylist:async(req, res)=>{
        try {
-        let result = await playlists.find();
+        const tokendecoded=req.headers.authorization.split(" ")[1];
+        let decode=jwt.decode(tokendecoded);
+        const {username}=decode;
+        let result = await playlists.find({username});
         return res.status(200).json({
             "msg":"success",
             "result":result,
