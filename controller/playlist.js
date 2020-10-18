@@ -26,7 +26,7 @@ module.exports ={
         const tokendecoded=req.headers.authorization.split(" ")[1];
         let decode=jwt.decode(tokendecoded);
         const {username}=decode;
-        let result = await playlists.find({username});
+        let result = await playlists.find({user:username});
         return res.status(200).json({
             "msg":"success",
             "result":result,
