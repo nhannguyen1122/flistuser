@@ -87,12 +87,13 @@ module.exports ={
         
         console.log("id",id);
         const{name}=req.body
-        const updateplaylist =await playlists.findOne({_id:id});
+        const updateplaylist =await playlists.findById(id);
         console.log(updateplaylist); 
         if(updateplaylist){
             await updateplaylist.updateOne({name:name,timeUpdated:new Date()});
             return res.status(200).json({
-                    "msg":"update playlist success"
+                    "msg":"update playlist success",
+		   "playlist":updateplaylist
             })
            
         }
