@@ -72,6 +72,7 @@ module.exports ={
             await CurrentUser.updateOne({playlists:playlists1});
             res.status(201).json({
                 "msg":" add success",
+		"playlist":savedplaylists
                 
             })
             }
