@@ -85,18 +85,27 @@ module.exports ={
        try {
         const{id}=req.params;
         
-        
+        const tokendecoded=req.headers.authorization.split(" ")[1];
+        let decode=jwt.decode(tokendecoded);
+        const {username}=decode;
         const{name}=req.body
         const updateplaylist =await playlists.findById(id);
         console.log(updateplaylist); 
         if(updateplaylist){
-            console.log('hello')
-             const result=await playlists.findOneAndUpdate({_id:id},{name:name,timeUpdated:new Date()},{new:true});
-             console.log('result',result);
-            return res.status(200).json({
-                    "msg":"update playlist success",
-		   "playlist":result
-            })
+            const playlistname=await playlists.findOne({name,user:username});
+             if(!playlistname){
+                const result=await playlists.findOneAndUpdate({_id:id},{name:name,timeUpdated:new Date()},{new:true});
+                console.log('result',result);
+               return res.status(200).json({
+                       "msg":"update playlist success",
+                        "playlist":result
+               })
+             }
+             else{
+                 res.status(500).json({
+                     'msg':"The list name hasn't been changed or it  existed"
+                 })
+             }
            
         }
         else{
