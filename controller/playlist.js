@@ -90,7 +90,7 @@ module.exports ={
         const updateplaylist =await playlists.findById(id);
         console.log(updateplaylist); 
         if(updateplaylist){
-            await updateplaylist.updateOne({name:name,timeUpdated:new Date()});
+            await updateplaylist.updateOne({name:name,timeUpdated:new Date()},{new:true});
             return res.status(200).json({
                     "msg":"update playlist success",
 		   "playlist":updateplaylist
