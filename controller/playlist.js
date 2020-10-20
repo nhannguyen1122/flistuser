@@ -112,8 +112,8 @@ module.exports ={
         try {
             const{id}=req.params;
             const tokendecoded=req.headers.authorization.split(" ")[1];
-            
-            const{ username}= jwt.decode(tokendecoded);
+            let decoded=await jwt.verify(tokendecoded,process.env.secretkey);
+            const{ username}= decoded;
            await playlists.findOneAndDelete({id});
            let CurrentUser=await users.findOne({ username:username});
            const playlists1=CurrentUser.playlists;
