@@ -4,6 +4,7 @@ let schema=mongoose.Schema;
 let playlist =new schema({
    name:String,
    movies:Array,
+   user:String,
    timeCreated: Date,
    timeUpdated:Date,
 });

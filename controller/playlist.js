@@ -46,7 +46,7 @@ module.exports ={
            const tokendecoded=req.headers.authorization.split(" ")[1];
            let decode=jwt.decode(tokendecoded);
            const {username}=decode;
-           const existplaylists=await playlists.findOne({name:name,username:username});
+           const existplaylists=await playlists.findOne({name:name,user:username});
            
            if(existplaylists){
                res.status(500).json({
@@ -59,6 +59,7 @@ module.exports ={
             let Playlist=new playlists({
                 name:name,
                 movies:[],
+                user:username,
                 timeCreated: new Date(),
                 timeUpdated: "",
             });
