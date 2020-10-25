@@ -90,12 +90,12 @@ module.exports ={
         const {username}=decode;
         const{name}=req.body
         const updateplaylist =await playlists.findById(id);
-        console.log(updateplaylist); 
+        
         if(updateplaylist){
             const playlistname=await playlists.findOne({name,user:username});
              if(!playlistname){
                 const result=await playlists.findOneAndUpdate({_id:id},{name:name,timeUpdated:new Date()},{new:true});
-                console.log('result',result);
+               
                return res.status(200).json({
                        "msg":"update playlist success",
                         "playlist":result
@@ -141,6 +141,10 @@ module.exports ={
      },
      addmovie:async(req,res)=>{
        try {
+        const {name}=req.params;
+        const token=req.headers.authorization.split(" ")[1];
+        
+        const{ username}= jwt.decode(token);
         const{popularity,
             id,
             video,
@@ -155,15 +159,20 @@ module.exports ={
             adult,
             overview,
             poster_path,
-            playlist_id,
-            }=req.body;
-         
-        let existingplaylist=await playlists.findOne({_id:playlist_id});
+           
+            }=req.body.movie;
+           //check exist of the movie
+           // push to new array
+           // update to db
+          
+        let existingplaylist=await playlists.findOne({name,user:username});
+        
         let {movies}=existingplaylist;
         let index= findIndex1(movies,id);
+        
         if(index!==null){
             return res.status(500).json({
-                "msg":"this movie has already been added",
+                "msg":"this movie has already been added to this List",
             })
         }
         else{
@@ -182,13 +191,15 @@ module.exports ={
             adult:adult,
             overview:overview,
             poster_path:poster_path,
-            playlist_id:playlist_id,
+          
         });
+        
         await existingplaylist.updateOne({movies:movies});
+      
         return res.status(200).json({
             "msg":"add successfully"
         })
-    }
+     }
        } catch (error) {
            return  res.status(500).json(error);
        }
@@ -196,18 +207,21 @@ module.exports ={
     deletemovie:async(req,res)=>{
         try {
             const{id}=req.params;
-            let arrayid=id.split("-");
-            let playlist_id=arrayid[0];
-            let deletemovie_id=arrayid[1];
-            
-            let existingplaylist=await playlists.findOne({_id:playlist_id});
-            console.log(existingplaylist);
-            let movies1=existingplaylist.movies;
-           let index= findIndex1(movies1,deletemovie_id);
-           movies1.splice(index,1);
-           console.log(movies1);
-           await existingplaylist.updateOne({movies:movies1});
-           return res.status(200).json({"msg":"delete success"});
+           
+                let arrayid=id.split("-");
+                let playlist_id=arrayid[0];
+                let deletemovie_id=arrayid[1];
+                
+                let existingplaylist=await playlists.findById(playlist_id);
+                
+                let movies1=existingplaylist.movies;
+               let index= findIndex1(movies1,parseInt(deletemovie_id));
+               
+               movies1.splice(index,1);
+        
+               await existingplaylist.updateOne({movies:movies1});
+              
+               return res.status(200).json({"msg":"delete success"});
         } catch (error) {
             res.status(500).json(error)
         }
