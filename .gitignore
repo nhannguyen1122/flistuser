@@ -1,3 +1,2 @@
 node_modules
-.env.secretkey
-.env.db_connection
+.env*
